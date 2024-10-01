@@ -66,6 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
         window.history.replaceState({}, '', window.location.pathname);
         userListView.classList.add('active');
         userDetailView.classList.remove('active');
+
+        fetchUsers();
     });
 
     searchInput.addEventListener('input', async (e) => {
@@ -83,21 +85,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadPage = async () => {
         const userId = window.location.hash ? window.location.hash.replace('#user-', '') : null;
 
-        if (userId) {
-            try {
-                const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
-                const user = await response.json();
-                displayUserDetail(user);
-            } catch (error) {
-                console.error('Error fetching user details:', error);
-            }
-        } else {
+        if (!userId) {
             userListView.classList.add('active');
             userDetailView.classList.remove('active');
+
+            fetchUsers();
+
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
+            const user = await response.json();
+            displayUserDetail(user);
+        } catch (error) {
+            console.error('Error fetching user details:', error);
         }
     };
 
-    fetchUsers();
     loadPage();
 
     window.addEventListener('popstate', loadPage);
