@@ -33,9 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const navigateToDetail = async (userId) => {
         try {
-            const params = new URLSearchParams(window.location.search);
-            params.set('userId', userId);
-            window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+            window.history.replaceState({ userId }, '', `${window.location.pathname}#user-${userId}`);
 
             const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
             const user = await response.json();
@@ -48,6 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const displayUserDetail = (user) => {
         userListView.classList.remove('active');
         userDetailView.classList.add('active');
+
+        if(!user || Object.keys(user).length === 0) {
+            userInfo.innerHTML = '<h2>User not found</h2>';
+            return;
+          }
+
         userInfo.innerHTML = `
             <h2>${user.name}</h2>
             <p><strong>Email:</strong> ${user.email}</p>
@@ -59,9 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     backButton.addEventListener('click', () => {
-        const params = new URLSearchParams(window.location.search);
-        params.delete('userId');
-        window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+        window.history.replaceState({}, '', window.location.pathname);
         userListView.classList.add('active');
         userDetailView.classList.remove('active');
     });
@@ -79,8 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const loadPage = async () => {
-        const params = new URLSearchParams(window.location.search);
-        const userId = params.get('userId');
+        const userId = window.location.hash ? window.location.hash.replace('#user-', '') : null;
 
         if (userId) {
             try {

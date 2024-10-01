@@ -23,14 +23,18 @@ const UserDetails = () => {
     return <div>Loading...</div>;
   }
 
+  if(Object.keys(user).length === 0) {
+    return <div>User not found</div>;
+  }
+
   return (
     <div>
       <h2>{user.name}</h2>
       <p><strong>Email:</strong> {user.email}</p>
       <p><strong>Phone:</strong> {user.phone}</p>
       <p><strong>Website:</strong> {user.website}</p>
-      <p><strong>Company:</strong> {user.company.name}</p>
-      <p><strong>Address:</strong> {user.address.street}, {user.address.city}</p>
+      <p><strong>Company:</strong> {user.company?.name}</p>
+      <p><strong>Address:</strong> {user.address?.street}, {user.address?.city}</p>
       <Link to="/">Back to User List</Link>
     </div>
   );
